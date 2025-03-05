@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xiaomi</title>
+    <link rel="icon" type="image/x-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Xiaomi_logo_%282021-%29.svg/768px-Xiaomi_logo_%282021-%29.svg.png">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <!-- Importmap para three.js v0.174.0 -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.174.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.174.0/examples/jsm/"
+        }
+    }
+    </script>
+    <!-- GSAP para animaciones y ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        body {
+            overflow-x: hidden;
+            background-color: #d1d5db; /* bg-gray-300 */
+        }
+
+        /* Estilo para el canvas */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        /* Contenido inicial */
+        .content {
+            position: relative;
+            text-align: center;
+            z-index: 1;
+            padding-top: 50vh;
+        }
+
+        .spacer {
+            height: 300vh; /* Espacio extra para el scroll */
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-start">
+    
+    <canvas id="scene"></canvas>
+
+    <div id="hub" class="content h-screen">
+        <h1 class="text-4xl font-bold text-blue-500">Bienvenido a la Página</h1>
+        <p class="text-lg text-gray-700 mt-4">Aquí verás las características del teléfono mientras scrolleas.</p>
+    </div>
+
+    <div id="pantalla" class="h-screen">
+        <h2 class="text-white text-3xl">TE AMO MI OSITA</h2>
+    </div>
+
+    <div id="trasera" class="spacer h-screen">
+        <h2 class="text-white text-3xl">TE AMO JAEL</h2>
+    </div>
+
+    <script type="module">
+        import * as THREE from "three";
+        import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+        // Configuración de la escena con antialiasing
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ 
+            canvas: document.getElementById('scene'), 
+            alpha: true,
+            antialias: true // Habilitamos antialiasing para bordes más suaves
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        
+        // Configuración de iluminación mejorada
+        // Luz ambiental suave para iluminación general
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        // Luz direccional principal
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+        mainLight.position.set(5, 5, 5);
+        scene.add(mainLight);
+
+        // Luz de relleno para reducir sombras duras
+        const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        fillLight.position.set(-5, -5, -5);
+        scene.add(fillLight);
+
+        // Luz de contorno para dar profundidad
+        const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        backLight.position.set(0, 0, -5);
+        scene.add(backLight);
+
+        let phone; // Variable global para el modelo
+
+        // Cargar la textura de la cámara
+        const textureLoader = new THREE.TextureLoader();
+        const texture = textureLoader.load('492448be03b17c1d78c43790d4d21eee.jpg');
+
+        // Cargar el modelo GLB
+        const loader = new GLTFLoader();
+        loader.load('telefono.glb', (gltf) => {
+            phone = gltf.scene;
+            phone.position.set(0, 0, 0); // Ajusta la posición inicial
+            phone.scale.set(1.2, 1.2, 1.2); // Ajusta el tamaño si es necesario
+            scene.add(phone);
+
+            // Aplicar la textura solo al material 6
+            phone.traverse((child) => {
+                if (child.isMesh && child.material && Array.isArray(child.material)) {
+                    if (child.material[6]) { // Si el material 6 existe
+                        child.material[6].map = texture;
+                        child.material[6].needsUpdate = true;
+                    }
+                    
+                    // Mejorar la calidad de renderizado de los materiales
+                    if (child.material) {
+                        child.material.needsUpdate = true;
+                        child.material.metalness = 0.2; // Añadir un poco de metalicidad
+                        child.material.roughness = 0.5; // Ajustar la rugosidad para reflejos más suaves
+                    }
+                }
+            });
+        });
+
+        // Posición inicial de la cámara
+        camera.position.set(0, 0, 3);
+
+        // Animación de rotación con GSAP ScrollTrigger
+        gsap.to({}, {
+            scrollTrigger: {
+                trigger: ".spacer",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 0,
+                onUpdate: (self) => {
+                    if (phone) {
+                        let progress = self.progress; // Valor de 0 a 1
+                        if (progress < 0.5) {
+                            phone.rotation.y = progress * Math.PI * 2; // Gira de 0° a 180°
+                        }
+                    }
+                }
+            }
+        });
+
+        // Animación de renderizado
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Ajuste de tamaño en ventana
+        window.addEventListener("resize", () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
