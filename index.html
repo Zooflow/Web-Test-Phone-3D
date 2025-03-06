@@ -6,7 +6,6 @@
     <title>Xiaomi</title>
     <link rel="icon" type="image/x-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Xiaomi_logo_%282021-%29.svg/768px-Xiaomi_logo_%282021-%29.svg.png">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <!-- Importmap para three.js v0.174.0 -->
     <script type="importmap">
     {
         "imports": {
@@ -15,155 +14,399 @@
         }
     }
     </script>
-    <!-- GSAP para animaciones y ScrollTrigger -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             overflow-x: hidden;
-            background-color: #d1d5db; /* bg-gray-300 */
+            background-color: #d1d5db;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Estilo para el canvas */
         canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .section {
+            position: relative;
+            width: 100%;
+            height: 120vh;
+            min-height: 100vh;
+        }
+
+        #pantalla {
+    
+            z-index: 1;
+        }
+
+        #trasera {
+           
+            z-index: 1;
+        }
+
+        #numero-15 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 400px;
+            font-weight: bold;
+            color: white;
+            opacity: 0.4;
+            user-select: none;
             z-index: -1;
         }
 
-        /* Contenido inicial */
-        .content {
-            position: relative;
-            text-align: center;
-            z-index: 1;
-            padding-top: 50vh;
+        ::selection { 
+            background: #f86011; /*Color naranja para el fondo*/
+            color:#fff;  /*Color blanco para el texto seleccionado*/
         }
 
-        .spacer {
-            height: 300vh; /* Espacio extra para el scroll */
-        }
+        /* Contenedor de fondo */
+.background-lights {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -2; /* Detrás del contenido */
+    overflow: hidden;
+}
+
+/* Pseudo-elemento para el granulado */
+.background-lights::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Puedes usar una imagen de ruido en línea o referenciar un archivo */
+    background: url('https://img.freepik.com/fotos-premium/fondo-abstracto-brillo-plateado_136875-2199.jpg?semt=ais_hybrid') repeat;
+    opacity: 0.2; /* Ajusta la intensidad del granulado */
+    pointer-events: none; /* Evita que interfiera con la interacción */
+    animation: grain 3s steps(10) infinite;
+}
+
+/* Animación para el granulado, usando cambios muy sutiles */
+@keyframes grain {
+    0% { background-position: 0 0; }
+    50% { background-position: 5px 5px; }
+    100% { background-position: 0 0; }
+}
+
+/* Contenedor para la interacción del mouse */
+.light-container {
+    position: absolute;
+    transition: transform 0.2s ease-out; /* Suaviza el movimiento al seguir el mouse */
+}
+
+/* Elemento con el efecto de luz */
+.light {
+    width: 750px;
+    height: 750px;
+    background: radial-gradient(circle, rgba(255, 104, 3, 0.8), transparent 70%);
+    filter: blur(60px);
+    animation: floatAnim 12s linear infinite, blink 5s ease-in-out infinite;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.light2 {
+    width: 650px;
+    height: 650px;
+    background: radial-gradient(circle, rgba(247, 6, 6, 0.8), transparent 70%);
+    filter: blur(60px);
+    animation: floatAnim 12s linear infinite, blink 5s ease-in-out infinite;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Efecto hover para que la luz se destaque */
+.light:hover {
+    animation-play-state: paused;  /* Pausa las animaciones para resaltar el efecto */
+    transform: scale(1.5);         /* Aumenta el tamaño */
+    filter: brightness(1.5) blur(40px);  /* Incrementa el brillo y reduce un poco el desenfoque */
+}
+
+.light.hovered {
+    transform: scale(1.3);
+    filter: brightness(1.5) blur(40px);
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+
+
+/* Animación de movimiento flotante */
+@keyframes floatAnim {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(20px, 20px) scale(1.1); }
+    100% { transform: translate(0, 0) scale(1); }
+}
+
+/* Animación de parpadeo */
+@keyframes blink {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 0.3; }
+}
+
+
     </style>
 </head>
-<body class="flex flex-col items-center justify-start">
+<body>
+    <!-- Fondo con luces -->
+<div class="background-lights">
+    <div class="light-container" style="top: 0%; left: 0%;">
+      <div class="light" style="animation-duration: 12s;"></div>
+    </div>
+    <div class="light-container" style="top: 50%; left: 65%;">
+      <div class="light2" style="animation-duration: 15s;"></div>
+    </div>
+  </div>
+  
+    <h1 class="text-center text-4xl font-bold text-black ml-6 pt-12">Xiaomi 15 Ultra</h1>
+    <div id="hub" class="h-[700px] flex justify-between items-center px-16">
+        <!-- Contenido alineado a la izquierda -->
+        <div>
+            <div class="mb-[200px]">
+                <p class="w-[210px] h-[37px] bg-black rounded-full text-center text-2xl font-bold text-white">Xiaomi HyperIA</p>
+                <p class="text-5xl font-bold text-black mt-6">Fotografía de élite</p>
+                <p class="text-xl text-black mt-8">Desde 1.499,99€</p>
+            </div>
+        </div>
     
+        <!-- Tarjeta alineada a la derecha -->
+        <div id="card" class="mb-[200px] flex justify-center items-center w-[460px] h-[320px] bg-gradient-to-br from-gray-300/30 to-gray-100/30 rounded-2xl shadow-lg border border-gray-400 text-center p-6 backdrop-opacity-10">
+            <p class="text-pretty text-lg font-medium text-gray-900">
+                Basado en un diseño óptico de máxima calidad, con una nueva lente óptica 
+                <span class="font-bold text-black">Leica Summilux</span> que redefine las imágenes móviles con una cobertura completa de la distancia focal, 
+                para convertir tus momentos más preciados en recuerdos eternos.<br><br>
+                Con capacidades de <span class="font-bold text-black">Snapdragon® 8 Elite Mobile Platform</span> y la tecnología de proceso de 3 nm de máxima calidad. 
+                Se ejecuta en <span class="font-bold text-black">Xiaomi HyperOS 2</span>, un paso hacia el ecosistema basado en AI.
+            </p>
+        </div>
+        
+    </div>
+
+    <p id="numero-15">15</p>
     <canvas id="scene"></canvas>
-
-    <div id="hub" class="content h-screen">
-        <h1 class="text-4xl font-bold text-blue-500">Bienvenido a la Página</h1>
-        <p class="text-lg text-gray-700 mt-4">Aquí verás las características del teléfono mientras scrolleas.</p>
+    
+    <div id="pantalla" class="section flex justify-center items-center">
+        <p class="text-white text-3xl">Pantalla</p>
     </div>
 
-    <div id="pantalla" class="h-screen">
-        <h2 class="text-white text-3xl">TE AMO MI OSITA</h2>
-    </div>
-
-    <div id="trasera" class="spacer h-screen">
-        <h2 class="text-white text-3xl">TE AMO JAEL</h2>
+    <div id="trasera" class="section flex justify-center items-center">
+        <p class="text-white text-3xl">Parte Trasera</p>
     </div>
 
     <script type="module">
         import * as THREE from "three";
         import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-        // Configuración de la escena con antialiasing
+        // Crear una escena optimizada
         const scene = new THREE.Scene();
+        
+        // Crear cámara con mejor configuración
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 3);
+        
+        // Configurar renderer con mejores opciones de rendimiento
         const renderer = new THREE.WebGLRenderer({ 
             canvas: document.getElementById('scene'), 
             alpha: true,
-            antialias: true // Habilitamos antialiasing para bordes más suaves
+            antialias: true,
+            powerPreference: "high-performance",
+            precision: "highp"
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limitar para mejor rendimiento
         
-        // Configuración de iluminación mejorada
-        // Luz ambiental suave para iluminación general
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        // Mejorar iluminación
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
         scene.add(ambientLight);
 
-        // Luz direccional principal
-        const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
         mainLight.position.set(5, 5, 5);
+        mainLight.castShadow = true;
         scene.add(mainLight);
 
-        // Luz de relleno para reducir sombras duras
-        const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        fillLight.position.set(-5, -5, -5);
-        scene.add(fillLight);
+        // Variables para controlar las rotaciones suavemente
+        const rotationState = {
+            targetRotationY: 0,
+            targetRotationZ: 0,
+            currentRotationY: 0,
+            currentRotationZ: 0,
+            // Coeficiente de suavizado (menor = más suave)
+            lerpFactor: 0.05
+        };
 
-        // Luz de contorno para dar profundidad
-        const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
-        backLight.position.set(0, 0, -5);
-        scene.add(backLight);
-
-        let phone; // Variable global para el modelo
-
-        // Cargar la textura de la cámara
-        const textureLoader = new THREE.TextureLoader();
-        const texture = textureLoader.load('492448be03b17c1d78c43790d4d21eee.jpg');
-
-        // Cargar el modelo GLB
-        const loader = new GLTFLoader();
-        loader.load('telefono.glb', (gltf) => {
-            phone = gltf.scene;
-            phone.position.set(0, 0, 0); // Ajusta la posición inicial
-            phone.scale.set(1.2, 1.2, 1.2); // Ajusta el tamaño si es necesario
-            scene.add(phone);
-
-            // Aplicar la textura solo al material 6
-            phone.traverse((child) => {
-                if (child.isMesh && child.material && Array.isArray(child.material)) {
-                    if (child.material[6]) { // Si el material 6 existe
-                        child.material[6].map = texture;
-                        child.material[6].needsUpdate = true;
-                    }
-                    
-                    // Mejorar la calidad de renderizado de los materiales
-                    if (child.material) {
-                        child.material.needsUpdate = true;
-                        child.material.metalness = 0.2; // Añadir un poco de metalicidad
-                        child.material.roughness = 0.5; // Ajustar la rugosidad para reflejos más suaves
-                    }
-                }
-            });
-        });
-
-        // Posición inicial de la cámara
-        camera.position.set(0, 0, 3);
-
-        // Animación de rotación con GSAP ScrollTrigger
-        gsap.to({}, {
-            scrollTrigger: {
-                trigger: ".spacer",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 0,
-                onUpdate: (self) => {
-                    if (phone) {
-                        let progress = self.progress; // Valor de 0 a 1
-                        if (progress < 0.5) {
-                            phone.rotation.y = progress * Math.PI * 2; // Gira de 0° a 180°
-                        }
-                    }
-                }
-            }
-        });
-
-        // Animación de renderizado
-        function animate() {
-            requestAnimationFrame(animate);
-            renderer.render(scene, camera);
+        let phone;
+        let loadingManager = new THREE.LoadingManager();
+        
+        // Optimizar el cargador
+        const loader = new GLTFLoader(loadingManager);
+        // Modificación en la parte donde cargas el modelo:
+loader.load('telefono.glb', (gltf) => {
+    phone = gltf.scene;
+    phone.position.set(0, 0, 0);
+    phone.scale.set(1.2, 1.2, 1.2);
+    
+    // Optimizar geometrías
+    phone.traverse((child) => {
+        if (child.isMesh) {
+            child.geometry.dispose();
+            child.geometry = child.geometry.clone(); // Forzar recomputación
+            child.material.dispose();
+            child.material = child.material.clone();
         }
+    });
+    
+    scene.add(phone);
+    
+    // Establecer la rotación inicial para mostrar el teléfono en vertical en la sección hub
+    phone.rotation.set(0, 0, 0);
+    
+    // Inicializar el estado de rotación
+    rotationState.currentRotationY = 0;
+    rotationState.currentRotationZ = 0;
+    rotationState.targetRotationY = 0;
+    rotationState.targetRotationZ = 0;
+});
+
+// Añadir un nuevo ScrollTrigger específico para la sección #hub
+gsap.to(rotationState, {
+    targetRotationZ: 0,
+    targetRotationY: 0,
+    scrollTrigger: {
+        trigger: "#hub",
+        start: "top top",
+        end: "bottom top",
+        scrub: 0.5,
+        markers: false,
+        id: "hub-trigger"
+    },
+    ease: "power2.inOut"
+});
+
+// ScrollTrigger para la sección pantalla (mantener actualizado con la nueva lógica)
+gsap.fromTo(
+    rotationState, 
+    { 
+        targetRotationZ: 0,
+        targetRotationY: 0 
+    },
+    {
+        targetRotationZ: Math.PI / 2,
+        targetRotationY: 0,
+        scrollTrigger: {
+            trigger: "#pantalla",
+            start: "top bottom",
+            end: "center center",
+            scrub: 0.5,
+            markers: false,
+            id: "pantalla-trigger"
+        },
+        ease: "power2.inOut"
+    }
+);
+
+// ScrollTrigger para la sección trasera (mantener actualizado con la nueva lógica)
+gsap.fromTo(
+    rotationState, 
+    { 
+        targetRotationZ: Math.PI / 2,
+        targetRotationY: 0 
+    },
+    {
+        targetRotationZ: 0,
+        targetRotationY: Math.PI,
+        scrollTrigger: {
+            trigger: "#trasera",
+            start: "top bottom",
+            end: "center center",
+            scrub: 0.5,
+            markers: false,
+            id: "trasera-trigger"
+        },
+        ease: "power2.inOut"
+    }
+);
+
+        // Función de animación más eficiente
+        function animate() {
+            // Interpolación lineal para suavizar rotaciones
+            if (phone) {
+                // Aplicar interpolación lineal (LERP) para movimientos suaves
+                rotationState.currentRotationY += (rotationState.targetRotationY - rotationState.currentRotationY) * rotationState.lerpFactor;
+                rotationState.currentRotationZ += (rotationState.targetRotationZ - rotationState.currentRotationZ) * rotationState.lerpFactor;
+                
+                // Aplicar rotaciones interpoladas
+                phone.rotation.y = rotationState.currentRotationY;
+                phone.rotation.z = rotationState.currentRotationZ;
+            }
+            
+            // Renderizar escena
+            renderer.render(scene, camera);
+            
+            // Optimización de solicitud de frame
+            requestAnimationFrame(animate);
+        }
+        
+        // Iniciar bucle de animación
         animate();
 
-        // Ajuste de tamaño en ventana
+        // Manejo eficiente del redimensionamiento
+        let resizeTimeout;
         window.addEventListener("resize", () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            // Evitar múltiples redimensionamientos con debounce
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            }, 200);
         });
+
+
+
+
+        // Escucha el movimiento del mouse para desplazar los contenedores de luces
+document.addEventListener("mousemove", (event) => {
+    // Calcular el centro de la ventana
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    // Obtener la diferencia normalizada respecto al centro
+    const deltaX = (event.clientX - centerX) / centerX;
+    const deltaY = (event.clientY - centerY) / centerY;
+    
+    // Aplicar un pequeño desplazamiento a cada contenedor
+    document.querySelectorAll('.light-container').forEach(container => {
+        // Multiplica por un factor para definir la magnitud del movimiento (por ejemplo, 20px)
+        const offsetX = deltaX * 20;
+        const offsetY = deltaY * 20;
+        container.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+    });
+});
+
+document.querySelectorAll('.light').forEach(light => {
+  light.addEventListener('mouseenter', () => {
+    light.classList.add('hovered');
+  });
+  light.addEventListener('mouseleave', () => {
+    light.classList.remove('hovered');
+  });
+});
+
+
     </script>
 </body>
 </html>
