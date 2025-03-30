@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,10 +17,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
+
+      
+        .cursor-dot {
+        position: fixed;
+        width: 12px;
+        height: 12px;
+        background-color: #f86011; /* Naranja Xiaomi */
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(248, 96, 17, 0.7);
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        transition: transform 0.1s ease-out;
+        z-index: 1000;
+    }
         html {
             scroll-behavior: smooth;
         }
         body {
+          cursor: none;
             overflow-x: hidden;
             background-color: #d1d5db;
             margin: 0;
@@ -115,8 +130,8 @@
 .light {
     width: 750px;
     height: 750px;
-    background: radial-gradient(circle, rgba(255, 104, 3, 0.8), transparent 70%);
-    filter: blur(60px);
+    background: radial-gradient(circle, rgba(255, 104, 3, 0.8), transparent 90%);
+    filter: blur(50px);
     animation: floatAnim 12s linear infinite, blink 5s ease-in-out infinite;
     transition: transform 0.3s ease, filter 0.3s ease;
 }
@@ -125,7 +140,7 @@
     width: 650px;
     height: 650px;
     background: radial-gradient(circle, rgba(247, 6, 6, 0.8), transparent 70%);
-    filter: blur(60px);
+    filter: blur(50px);
     animation: floatAnim 12s linear infinite, blink 5s ease-in-out infinite;
     transition: transform 0.3s ease, filter 0.3s ease;
 }
@@ -134,12 +149,12 @@
 .light:hover {
     animation-play-state: paused;  /* Pausa las animaciones para resaltar el efecto */
     transform: scale(1.5);         /* Aumenta el tamaño */
-    filter: brightness(1.5) blur(40px);  /* Incrementa el brillo y reduce un poco el desenfoque */
+    filter: brightness(1.5) blur(20px);  /* Incrementa el brillo y reduce un poco el desenfoque */
 }
 
 .light.hovered {
-    transform: scale(1.3);
-    filter: brightness(1.5) blur(40px);
+    transform: scale(1.2);
+    filter: brightness(1) blur(40px);
     transition: transform 0.3s ease, filter 0.3s ease;
 }
 
@@ -158,54 +173,355 @@
     50% { opacity: 0.3; }
 }
 
+.hidden {
+    display: none;
+}
+
+.country-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown {
+  position: absolute;
+  left: 0;
+  margin-top: 0.5rem;
+  width: 12rem;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+}
+
+.dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f3f4f6;
+}
+
+/* Clase para ocultar elementos */
+.hidden {
+  display: none;
+}
+
+.marquesina-container {
+  width: 100vw;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+.marquesina {
+  display: flex;
+  width: max-content;
+  animation: marquee 10s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Clases para cambiar la velocidad dinámicamente */
+.fast {
+  animation-duration: 3s !important;
+}
+
+.slow {
+  animation-duration: 10s !important;
+}
 
     </style>
 </head>
 <body>
+<div class="cursor-dot"></div>
     <!-- Fondo con luces -->
 <div class="background-lights">
     <div class="light-container" style="top: 0%; left: 0%;">
-      <div class="light" style="animation-duration: 12s;"></div>
+      <div class="light" style="animation-duration: 7s;"></div>
     </div>
     <div class="light-container" style="top: 50%; left: 65%;">
-      <div class="light2" style="animation-duration: 15s;"></div>
+      <div class="light2" style="animation-duration: 5s;"></div>
     </div>
   </div>
   
     <h1 class="text-center text-4xl font-bold text-black ml-6 pt-12">Xiaomi 15 Ultra</h1>
-    <div id="hub" class="h-[700px] flex justify-between items-center px-16">
+    <div id="hub" class="h-[690px] flex justify-between items-center px-16">
         <!-- Contenido alineado a la izquierda -->
         <div>
-            <div class="mb-[200px]">
+            <div class="mb-[120px]">
                 <p class="w-[210px] h-[37px] bg-black rounded-full text-center text-2xl font-bold text-white">Xiaomi HyperIA</p>
                 <p class="text-5xl font-bold text-black mt-6">Fotografía de élite</p>
-                <p class="text-xl text-black mt-8">Desde 1.499,99€</p>
+                <div class="flex">
+                    <p id="price" class="text-xl text-black mt-8 underline">Desde 1.499,99€</p>
+                    <div class="country-dropdown">
+                      <button id="countryButton" class="ml-4 mt-[30px] group relative cursor-pointer">
+                        <img src="globe.gif" alt="Seleccionar país" 
+                            class="w-8 h-8 bg-orange-600/30 rounded-full 
+                                   transition-all duration-300 ease-out 
+                                   group-hover:scale-125 group-hover:rotate-12 
+                                   group-hover:shadow-lg group-hover:shadow-orange-500/50 
+                                   animate-pulse">
+                    
+                        <span class="absolute -top-10 left-1/2 -translate-x-1/2 bg-amber-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Seleccionar País
+                        </span>
+                    </button>                    
+                        <!-- Dropdown de países, oculto por defecto -->
+                        <div id="dropdown" class="dropdown hidden absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-50">
+                            <ul>
+                              <li data-country="EUR" data-currency="€" class="dropdown-item px-4 py-2 hover:bg-gray-100 cursor-pointer">España</li>
+                              <li data-country="CLP" data-currency="CLP" class="dropdown-item px-4 py-2 hover:bg-gray-100 cursor-pointer">Chile</li>
+                              <li data-country="USD" data-currency="$" class="dropdown-item px-4 py-2 hover:bg-gray-100 cursor-pointer">Estados Unidos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     
         <!-- Tarjeta alineada a la derecha -->
-        <div id="card" class="mb-[200px] flex justify-center items-center w-[460px] h-[320px] bg-gradient-to-br from-gray-300/30 to-gray-100/30 rounded-2xl shadow-lg border border-gray-400 text-center p-6 backdrop-opacity-10">
-            <p class="text-pretty text-lg font-medium text-gray-900">
-                Basado en un diseño óptico de máxima calidad, con una nueva lente óptica 
-                <span class="font-bold text-black">Leica Summilux</span> que redefine las imágenes móviles con una cobertura completa de la distancia focal, 
-                para convertir tus momentos más preciados en recuerdos eternos.<br><br>
-                Con capacidades de <span class="font-bold text-black">Snapdragon® 8 Elite Mobile Platform</span> y la tecnología de proceso de 3 nm de máxima calidad. 
-                Se ejecuta en <span class="font-bold text-black">Xiaomi HyperOS 2</span>, un paso hacia el ecosistema basado en AI.
-            </p>
+        <div id="card" class="text-pretty mb-[100px] justify-center items-center w-[430px] h-[130px] bg-gradient-to-br from-gray-300/30 to-gray-100/30 rounded-2xl shadow-lg border border-gray-400/20 text-center p-6 backdrop-opacity-10">
+          <div class="flex">
+            <p class="text-5xl font-bold">Xiaomi Hyper</p> <p class="text-5xl font-bold text-blue-600">OS</p>
+          </div>
+           <p class="text-2xl font-bold mt-3">Android 15</p>
         </div>
-        
     </div>
 
     <p id="numero-15">15</p>
     <canvas id="scene"></canvas>
-    
-    <div id="pantalla" class="section flex justify-center items-center">
-        <p class="text-white text-3xl">Pantalla</p>
-    </div>
 
-    <div id="trasera" class="section flex justify-center items-center">
-        <p class="text-white text-3xl">Parte Trasera</p>
+    <div class="h-[200px] flex justify-between ">
+        <div class="w-[500px]">
+            <p class="text-pretty text-lg font-medium text-gray-900 pl-24">
+                Basado en un diseño óptico de máxima calidad, con una nueva lente óptica 
+                <span class="font-bold text-black">Leica Summilux</span> que redefine las imágenes móviles con una cobertura completa de la distancia focal, 
+                para convertir tus momentos más preciados en recuerdos eternos.</p>
+        </div>
+        <div class="w-[500px]">
+            <p class="text-pretty text-lg font-medium text-gray-900 pr-24">
+                Con capacidades de <span class="font-bold text-black">Snapdragon® 8 Elite Mobile Platform</span> y la tecnología de proceso de 3 nm de máxima calidad. 
+                Se ejecuta en <span class="font-bold text-black">Xiaomi HyperOS 2</span>, un paso hacia el ecosistema basado en AI.</p>
+        </div>
     </div>
+    <div class="h-[200px] flex justify-between">
+      <div class="items-center flex pl-24 relative">
+        <img class="w-32" src="snapdragon.png" alt="">
+        <p class="text-pretty font-semibold text-gray-900 text-2xl w-[300px]">Procesador Snapdragon® 8 Elite Mobile Platform</p>
+    </div>
+    <div class="pr-24">
+      <img class="w-[250px] pl-24" src="IA.png" alt="">
+      <p class="text-pretty font-semibold text-gray-900 text-xl w-[400px]">AI Writing, AI Speech Recognition, AI Interpreter, AI Creativity Assistant Y mucho más.</p>
+    </div>
+    </div>
+    
+        <img class="opacity-20 absolute ml-[165px] mt-[-110px] w-[470px]" src="line.svg" alt="">
+        <img class="opacity-20 absolute ml-[730px] mt-[-170px] w-[400px]" src="line2.svg" alt="">
+
+    <div id="pantalla" class="section">
+        <div class="marquesina-container pt-[150px]">
+            <div class="marquesina text-6xl text-orange-500 font-bold opacity-20">
+                <p class="">GRAN RENDIMIENTO &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GRAN RENDIMIENTO &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GRAN RENDIMIENTO &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GRAN RENDIMIENTO</p>
+            </div>
+        </div>
+        <p class="text-white text-4xl font-bold text-center pt-16">Especificaciones</p>
+        <!-- Bento Box -->      
+        <div class="grid grid-cols-7 grid-rows-5 gap-4 h-[670px] pt-[100px] mx-2 mb-12">
+          <!-- Primera fila -->
+          <div class="col-span-2 row-span-2 bg-gradient-to-br from-orange-600 to-orange-700 rounded-2xl shadow-lg flex flex-col justify-center items-center p-4 text-white transition-transform hover:scale-[1.02]">
+            <span class="text-xs font-semibold bg-black/20 px-2 py-1 rounded-full mb-2">Xiaomi HyperIA</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <h3 class="text-lg font-bold">Fotografía Pro</h3>
+            <p class="text-xs mt-1 opacity-80">Leica Summilux</p>
+          </div>
+          
+          <!-- Segunda fila izquierda -->
+          <div class="row-span-2 col-start-1 row-start-3 bg-gradient-to-br from-orange-600 to-orange-700 rounded-2xl shadow-lg flex flex-col justify-center items-center p-3 text-white transition-transform hover:scale-[1.02]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <span class="text-3xl font-bold">5G</span>
+            <p class="text-xs mt-1">Conectividad</p>
+          </div>
+          
+          <!-- Segunda fila derecha -->
+          <div class="row-span-2 col-start-2 row-start-3 bg-gradient-to-br from-orange-600 to-orange-700 rounded-2xl shadow-lg flex flex-col justify-center items-center p-3 text-white transition-transform hover:scale-[1.02]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <span class="text-2xl font-bold">120Hz</span>
+            <p class="text-xs mt-1">AMOLED</p>
+          </div>
+          
+          <!-- Tercera fila inferior -->
+          <div class="col-span-2 col-start-1 row-start-5 bg-gradient-to-br from-orange-600 to-orange-700 rounded-2xl shadow-lg flex justify-center items-center p-3 text-white transition-transform hover:scale-[1.02]">
+            <div class="flex items-center space-x-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 21V16M17 18h6" />
+              </svg>
+              <div>
+                <span class="text-sm font-bold">Carga Rápida</span>
+                <p class="text-xs">120W HyperCharge</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Primera fila derecha -->
+          <div class="col-span-2 row-span-2 col-start-6 row-start-1 bg-gradient-to-br from-orange-600 to-orange-700 rounded-2xl shadow-lg flex flex-col justify-center items-center p-4 text-white transition-transform hover:scale-[1.02]">
+            <span class="text-xs font-semibold bg-black/20 px-2 py-1 rounded-full mb-2">Snapdragon®</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+            </svg>
+            <h3 class="text-lg font-bold">8 Elite</h3>
+            <p class="text-xs mt-1 opacity-80">Mobile Platform</p>
+          </div>
+          
+          <!-- Segunda fila derecha -->
+          <div class="row-span-2 col-start-6 row-start-3 bg-gradient-to-br from-orange-600 to-orange-700 rounded-2xl shadow-lg flex flex-col justify-center items-center p-3 text-white transition-transform hover:scale-[1.02]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h.5A2.5 2.5 0 0020 5.5v-1.5" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h.5A2.5 2.5 0 0020 5.5v-1.5" />
+            </svg>
+            <span class="text-2xl font-bold">IP68</span>
+            <p class="text-xs mt-1">Resistencia</p>
+          </div>
+          
+          <!-- Tercera fila inferior derecha -->
+          <div class="col-start-6 row-start-5 bg-gradient-to-br from-orange-600 to-orange-700 rounded-2xl shadow-lg flex justify-center items-center p-3 text-white transition-transform hover:scale-[1.02]">
+            <div class="flex flex-col items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <span class="text-xs font-bold">MIUI 15</span>
+            </div>
+          </div>
+          
+          <!-- Columna derecha -->
+          <div class="row-span-3 col-start-7 row-start-3 bg-gradient-to-br from-orange-600 to-orange-700 rounded-2xl shadow-lg flex flex-col justify-center items-center p-3 text-white transition-transform hover:scale-[1.02]">
+            <span class="text-xs font-semibold bg-black/20 px-2 py-1 rounded-full mb-2">HyperOS</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            <h3 class="font-bold text-xl">AI</h3>
+            <p class="text-xs mt-2 text-center">Asistente<br>Inteligente</p>
+          </div>
+        </div>  
+    </div>
+    <div id="trasera" class="h-screen py-12 px-6 relative">
+      <p class="text-white text-3xl font-bold text-center mb-12 pt-5 pl-2">Cámara</p>
+      
+      <!-- Contenedor principal con diseño adaptado para el modelo 3D -->
+      <div class="flex flex-wrap justify-between items-stretch max-w-6xl mx-auto relative pt-[140px]">
+          <!-- Columna izquierda - cámaras 1 y 2 -->
+          <div class="w-1/4 flex flex-col justify-between gap-6">
+              <!-- Cámara Principal -->
+              <div class="bg-gradient-to-br from-orange-600 to-orange-700 rounded-full p-6 text-white shadow-lg relative transition-transform hover:scale-105 flex flex-col items-center">
+                  <div class="absolute -top-3 -right-3 bg-white text-orange-600 rounded-full h-8 w-8 flex items-center justify-center font-bold">1</div>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span class="text-2xl font-bold">50MP</span>
+                  <p class="text-sm font-medium">Cámara Principal</p>
+                  <p class="text-xs mt-1 opacity-80">Leica Summilux f/1.6</p>
+              </div>
+              
+              <!-- Ultra Angular -->
+              <div class="bg-gradient-to-br from-orange-600 to-orange-700 rounded-full p-6 text-white shadow-lg relative transition-transform hover:scale-105 flex flex-col items-center">
+                  <div class="absolute -top-3 -right-3 bg-white text-orange-600 rounded-full h-8 w-8 flex items-center justify-center font-bold">2</div>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span class="text-2xl font-bold">48MP</span>
+                  <p class="text-sm font-medium">Ultra Angular</p>
+                  <p class="text-xs mt-1 opacity-80">120° f/2.2</p>
+              </div>
+          </div>
+          
+          <!-- Espacio central para el modelo 3D del teléfono -->
+          <div class="w-2/4 flex justify-center items-center">
+              <!-- Espacio reservado para el modelo 3D -->
+          </div>
+          
+          <!-- Columna derecha - cámaras 3 y 4 -->
+          <div class="w-1/4 flex flex-col justify-between gap-6">
+              <!-- Teleobjetivo -->
+              <div class="bg-gradient-to-br from-orange-600 to-orange-700 rounded-full p-6 text-white shadow-lg relative transition-transform hover:scale-105 flex flex-col items-center">
+                  <div class="absolute -top-3 -right-3 bg-white text-orange-600 rounded-full h-8 w-8 flex items-center justify-center font-bold">3</div>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                  </svg>
+                  <span class="text-2xl font-bold">50MP</span>
+                  <p class="text-sm font-medium">Teleobjetivo</p>
+                  <p class="text-xs mt-1 opacity-80">3.2x Zoom Óptico</p>
+              </div>
+              
+              <!-- Periscopio -->
+              <div class="bg-gradient-to-br from-orange-600 to-orange-700 rounded-full p-6 text-white shadow-lg relative transition-transform hover:scale-105 flex flex-col items-center">
+                  <div class="absolute -top-3 -right-3 bg-white text-orange-600 rounded-full h-8 w-8 flex items-center justify-center font-bold">4</div>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="text-2xl font-bold">48MP</span>
+                  <p class="text-sm font-medium">Periscopio</p>
+                  <p class="text-xs mt-1 opacity-80">5x Zoom Óptico</p>
+              </div>
+          </div>
+      </div>
+      
+      <!-- Características adicionales en la parte inferior -->
+      <div class="flex justify-between max-w-6xl mx-auto mt-8">
+          <div class="bg-gray-800/70 rounded-xl py-3 px-4 text-white shadow-lg flex items-center gap-2 transition-transform hover:scale-105 w-[32%]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <div>
+                  <span class="font-medium">Video 8K</span>
+                  <p class="text-xs opacity-80">60fps HDR10+</p>
+              </div>
+          </div>
+          
+          <div class="bg-gray-800/70 rounded-xl py-3 px-4 text-white shadow-lg flex items-center gap-2 transition-transform hover:scale-105 w-[32%]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <div>
+                  <span class="font-medium">Modo Pro</span>
+                  <p class="text-xs opacity-80">RAW Capture</p>
+              </div>
+          </div>
+          
+          <div class="bg-gray-800/70 rounded-xl py-3 px-4 text-white shadow-lg flex items-center gap-2 transition-transform hover:scale-105 w-[32%]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              <div>
+                  <span class="font-medium">XiaomiIA</span>
+                  <p class="text-xs opacity-80">Fotografía Computacional</p>
+              </div>
+          </div>
+      </div>
+  </div>
 
     <script type="module">
         import * as THREE from "three";
@@ -230,10 +546,10 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limitar para mejor rendimiento
         
         // Mejorar iluminación
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         scene.add(ambientLight);
 
-        const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        const mainLight = new THREE.DirectionalLight(0xffffff, 4);
         mainLight.position.set(5, 5, 5);
         mainLight.castShadow = true;
         scene.add(mainLight);
@@ -406,7 +722,139 @@ document.querySelectorAll('.light').forEach(light => {
   });
 });
 
+    // Precio base en euros
+const basePriceEUR = 1499.99;
 
+// Elementos del DOM
+const countryButton = document.getElementById('countryButton');
+const dropdown = document.getElementById('dropdown');
+const dropdownItems = document.querySelectorAll('.dropdown-item');
+const priceElement = document.getElementById('price');
+
+// Alternar visibilidad del dropdown al pulsar el botón
+countryButton.addEventListener('click', (e) => {
+  // Evitar que el clic se propague y active el listener de document
+  e.stopPropagation();
+  dropdown.classList.toggle('hidden');
+});
+
+// Actualizar el precio al seleccionar un país y ocultar el dropdown
+dropdownItems.forEach(item => {
+  item.addEventListener('click', (e) => {
+    const selectedCountry = item.getAttribute('data-country');
+    const currencySymbol = item.getAttribute('data-currency');
+    
+    if (selectedCountry === 'EUR') {
+      priceElement.textContent = `Desde ${basePriceEUR.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€`;
+    } else if (selectedCountry === 'CLP') {
+      const conversionRate = 950; // Ejemplo: 1 EUR = 950 CLP
+      const priceCLP = Math.round(basePriceEUR * conversionRate);
+      priceElement.textContent = `Desde ${priceCLP.toLocaleString('es-CL')} CLP`;
+    } else if (selectedCountry === 'USD') {
+      const conversionRate = 1.1; // Ejemplo: 1 EUR = 1.1 USD
+      const priceUSD = Math.round(basePriceEUR * conversionRate);
+      priceElement.textContent = `Desde ${currencySymbol}${priceUSD.toLocaleString('en-US')}`;
+    }
+    
+    // Ocultar el dropdown
+    dropdown.classList.add('hidden');
+  });
+});
+
+// Ocultar el dropdown al hacer clic fuera del contenedor
+document.addEventListener('click', (e) => {
+  if (!document.querySelector('.country-dropdown').contains(e.target)) {
+    dropdown.classList.add('hidden');
+  }
+});
+
+
+const marquee = document.querySelector(".marquesina");
+let lastScrollY = window.scrollY;
+let pushAmount = 0;
+let animationFrameId = null;
+
+// Base animation stays constant
+marquee.style.animation = "marquee 10s linear infinite";
+
+// Function to handle scrolling and apply push effect
+function handleScroll() {
+  // Calculate scroll speed and direction
+  const currentScrollY = window.scrollY;
+  const scrollDelta = currentScrollY - lastScrollY;
+  lastScrollY = currentScrollY;
+  
+  // Only respond to significant scrolling
+  if (Math.abs(scrollDelta) > 1) {
+    // Add to push amount based on scroll speed (negative for downward scroll)
+    // Adjust the multiplier to control sensitivity
+    pushAmount -= scrollDelta * 0.5;
+    
+    // Cap the maximum push amount
+    pushAmount = Math.max(-200, Math.min(pushAmount, 200));
+    
+    // Make sure our animation frame is running to handle the push effect
+    if (!animationFrameId) {
+      animationFrameId = requestAnimationFrame(updatePush);
+    }
+  }
+}
+
+// Function to gradually apply and reduce the push effect
+function updatePush() {
+  // Apply the current push amount
+  marquee.style.transform = `translateX(${pushAmount}px)`;
+  
+  // Gradually reduce the push amount (creates the "momentum" feel)
+  pushAmount *= 0.95; // Adjust this decay rate as needed
+  
+  // Stop updating when the push is negligible
+  if (Math.abs(pushAmount) < 0.5) {
+    pushAmount = 0;
+    marquee.style.transform = '';
+    animationFrameId = null;
+    return;
+  }
+  
+  // Continue the animation loop
+  animationFrameId = requestAnimationFrame(updatePush);
+}
+
+// Use throttled event listener for better performance
+let ticking = false;
+window.addEventListener("scroll", function() {
+  if (!ticking) {
+    window.requestAnimationFrame(function() {
+      handleScroll();
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+
+//Mouse
+document.addEventListener("DOMContentLoaded", () => {
+            const cursorDot = document.querySelector(".cursor-dot");
+            let mouseX = 5, mouseY = 0;
+            let dotX = 10, dotY = 4;
+            
+            document.addEventListener("mousemove", (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function animateDot() {
+                dotX += (mouseX - dotX) * 0.4; // Suaviza el movimiento
+                dotY += (mouseY - dotY) * 0.4;
+
+                cursorDot.style.transform = `translate(${dotX}px, ${dotY}px)`;
+
+                requestAnimationFrame(animateDot);
+            }
+            
+            animateDot();
+        });
     </script>
 </body>
 </html>
